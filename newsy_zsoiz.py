@@ -1,23 +1,21 @@
 import requests
 from bs4 import BeautifulSoup
+from pprint import pprint
 
 
-r = requests.get("https://zsoiz-czyzew.pl")
+url = "https://zsoiz-czyzew.pl"
+
+r = requests.get(url)
 html_src = r.text
 print("Pobieram zsoiz-czyzew.pl...")
-soup = BeautifulSoup(html_src, 'lxml')
-headlines = soup.find_all("div", class_='news-title')
-# print(type(headlines))
-news_titles = []
-for head in headlines:
-    alinks = head.find_all("a")
-    # print(alinks)
-    for link in alinks:
-        news = link.text
-        news_titles.append(news.strip())
+
+soup = BeautifulSoup(html_src, 'html.parser')
+search = soup.find_all("div", class_='news-title')
+# print(type(search))
 
 print("Nagłówki aktualności ze strony https://zsoiz-czyzew.pl:")
-for n in news_titles:
-    print(f"-{n}")
-
+for el in search:
+    art_title = " ".join(el.a.string.split())
+    art_time = " ".join(el.time.string.split())
+    print(f"- {art_title}, {art_time}")
 
